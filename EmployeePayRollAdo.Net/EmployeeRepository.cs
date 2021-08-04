@@ -114,5 +114,47 @@ namespace EmployeePayRollAdo.Net
                 sqlConnection.Close();
             }
         }
+        public void RetriveDataBasedOnDateRange(EmployeeModel model)
+        {
+            try
+            {
+                string query = @"select * from employee_payroll where StartDate between cast('2020-01-1' as date) and getdate()";
+                SqlCommand command = new SqlCommand(query, sqlConnection);
+                sqlConnection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        model.EmployeId = Convert.ToInt32(reader["Id"]);
+                        model.EmployeName = reader["Name"].ToString();
+                        model.Base_pay = Convert.ToDouble(reader["Base_pay"]);
+                        model.StartDate = reader.GetDateTime(3);
+                        model.Gender = reader.GetString(4);
+                        model.PhoneNumber = Convert.ToDouble(reader["PhoneNumber"]);
+                        model.Department = reader.GetString(6);
+                        model.Address = reader.GetString(7);
+                        model.TaxablePay = reader.GetDouble(8);
+                        model.Deductions = reader.GetDouble(9);
+                        model.NetPay = reader.GetDouble(10);
+                        model.IncomeTax = reader.GetDouble(11);
+                        Console.WriteLine($"|{model.EmployeId}|{model.EmployeName}|{model.Department}|{model.Gender}|{model.Base_pay}|{model.StartDate}|{model.Address}|{model.PhoneNumber}|{model.TaxablePay}|{model.Deductions}|{model.NetPay}|{model.IncomeTax}\n");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Data Not Found");
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+        }
     }
 }

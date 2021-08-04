@@ -12,7 +12,8 @@ namespace EmployeePayRollAdo.Net
         {
             Console.WriteLine("\t\tWelcome to Employee PayRoll Using ADO.NET\n");
             EmployeeRepository repository = new EmployeeRepository();
-            repository.GetTotalInformationFromTable();
+            EmployeeModel model = new EmployeeModel();
+            repository.RetriveDataBasedOnDateRange(model);
             Console.ReadLine();
         }
     }

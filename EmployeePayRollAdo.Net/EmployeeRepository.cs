@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -59,7 +60,6 @@ namespace EmployeePayRollAdo.Net
                 sqlConnection.Close();
             }
         }
-
         public int UpdateSalaryUsingQuery()
         {
             try
@@ -73,6 +73,36 @@ namespace EmployeePayRollAdo.Net
                 else
                     Console.WriteLine("Update Fail");
                 return result;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return default;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+        }
+        public int UpdateSalaryUsingProcedure(EmployeeModel model)
+        {
+            try
+            {
+                using(sqlConnection)
+                {
+                    SqlCommand command = new SqlCommand("UpdateBasePay", sqlConnection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("Id", model.EmployeId);
+                    command.Parameters.AddWithValue("Name", model.EmployeName);
+                    command.Parameters.AddWithValue("Base_Pay", model.Base_pay);
+                    sqlConnection.Open();
+                    int result = command.ExecuteNonQuery();
+                    if (result != 0)
+                        Console.WriteLine("Salary is Updated Successful");
+                    else
+                        Console.WriteLine("Update Fail");
+                    return result;
+                }
             }
             catch(Exception ex)
             {

@@ -20,38 +20,15 @@ namespace EmployeePayRollAdo.Net
                 EmployeeModel model = new EmployeeModel();
                 string query = @"select * from employee_payroll";
                 //Command Object for executing query against database
-                SqlCommand command = new SqlCommand(query,sqlConnection);
+                SqlCommand command = new SqlCommand(query, sqlConnection);
                 //Opening connection to database
                 sqlConnection.Open();
                 //reader it contains result data of query
                 SqlDataReader reader = command.ExecuteReader();
-                if(reader.HasRows)
-                {
-                    while(reader.Read())
-                    {
-                        model.EmployeId = Convert.ToInt32(reader["Id"]);
-                        model.EmployeName = reader["Name"].ToString();
-                        model.Base_pay = Convert.ToDouble(reader["Base_pay"]);
-                        //without converting you can pass the index value it automaticaly convert
-                        model.StartDate = reader.GetDateTime(3);
-                        model.Gender = reader.GetString(4);
-                        model.PhoneNumber = Convert.ToDouble(reader["PhoneNumber"]);
-                        model.Department = reader.GetString(6);
-                        model.Address = reader.GetString(7);
-                        model.TaxablePay = reader.GetDouble(8);
-                        model.Deductions = reader.GetDouble(9);
-                        model.NetPay = reader.GetDouble(10);
-                        model.IncomeTax = reader.GetDouble(11);
-                        Console.WriteLine($"|{model.EmployeId}|{model.EmployeName}|{model.Department}|{model.Gender}|{model.Base_pay}|{model.StartDate}|{model.Address}|{model.PhoneNumber}|{model.TaxablePay}|{model.Deductions}|{model.NetPay}|{model.IncomeTax}\n");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Data Not Found");
-                }
+                DisplayEmployeeData(reader, model);
                 reader.Close();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
@@ -74,7 +51,7 @@ namespace EmployeePayRollAdo.Net
                     Console.WriteLine("Update Fail");
                 return result;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return default;
@@ -88,7 +65,7 @@ namespace EmployeePayRollAdo.Net
         {
             try
             {
-                using(sqlConnection)
+                using (sqlConnection)
                 {
                     SqlCommand command = new SqlCommand("UpdateBasePay", sqlConnection);
                     command.CommandType = CommandType.StoredProcedure;
@@ -104,7 +81,7 @@ namespace EmployeePayRollAdo.Net
                     return result;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return default;
@@ -122,23 +99,31 @@ namespace EmployeePayRollAdo.Net
                 SqlCommand command = new SqlCommand(query, sqlConnection);
                 sqlConnection.Open();
                 SqlDataReader reader = command.ExecuteReader();
+                DisplayEmployeeData(reader, model);
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+        }
+        public void AgregateFunctionBasedOnGender()
+        {
+            try
+            {
+                string query = @"select sum(Base_Pay) as TotalSalary,min(Base_Pay) as MinimumSalary,max(Base_Pay) as MaximumSalary,Round(avg(Base_Pay), 0) as AverageSalary,Count(*) as FemaleCount from employee_payroll where Gender = 'F' group by Gender";
+                SqlCommand command = new SqlCommand(query, sqlConnection);
+                sqlConnection.Open();
+                SqlDataReader reader = command.ExecuteReader();
                 if (reader.HasRows)
                 {
                     while (reader.Read())
                     {
-                        model.EmployeId = Convert.ToInt32(reader["Id"]);
-                        model.EmployeName = reader["Name"].ToString();
-                        model.Base_pay = Convert.ToDouble(reader["Base_pay"]);
-                        model.StartDate = reader.GetDateTime(3);
-                        model.Gender = reader.GetString(4);
-                        model.PhoneNumber = Convert.ToDouble(reader["PhoneNumber"]);
-                        model.Department = reader.GetString(6);
-                        model.Address = reader.GetString(7);
-                        model.TaxablePay = reader.GetDouble(8);
-                        model.Deductions = reader.GetDouble(9);
-                        model.NetPay = reader.GetDouble(10);
-                        model.IncomeTax = reader.GetDouble(11);
-                        Console.WriteLine($"|{model.EmployeId}|{model.EmployeName}|{model.Department}|{model.Gender}|{model.Base_pay}|{model.StartDate}|{model.Address}|{model.PhoneNumber}|{model.TaxablePay}|{model.Deductions}|{model.NetPay}|{model.IncomeTax}\n");
+                        Console.WriteLine("\n TotalSalary: {0} \n MinimumSalary: {1} \n MaximumSalary: {2}\n AverageSalary: {3} \n FemaleCount: {4}", reader[0], reader[1], reader[2], reader[3], reader[4]);
                     }
                 }
                 else
@@ -154,6 +139,33 @@ namespace EmployeePayRollAdo.Net
             finally
             {
                 sqlConnection.Close();
+            }
+        }
+        public static void DisplayEmployeeData(SqlDataReader reader, EmployeeModel model)
+        {
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    model.EmployeId = Convert.ToInt32(reader["Id"]);
+                    model.EmployeName = reader["Name"].ToString();
+                    model.Base_pay = Convert.ToDouble(reader["Base_pay"]);
+                    //without converting you can pass the index value it automaticaly convert
+                    model.StartDate = reader.GetDateTime(3);
+                    model.Gender = reader.GetString(4);
+                    model.PhoneNumber = Convert.ToDouble(reader["PhoneNumber"]);
+                    model.Department = reader.GetString(6);
+                    model.Address = reader.GetString(7);
+                    model.TaxablePay = reader.GetDouble(8);
+                    model.Deductions = reader.GetDouble(9);
+                    model.NetPay = reader.GetDouble(10);
+                    model.IncomeTax = reader.GetDouble(11);
+                    Console.WriteLine($"|{model.EmployeId}|{model.EmployeName}|{model.Department}|{model.Gender}|{model.Base_pay}|{model.StartDate}|{model.Address}|{model.PhoneNumber}|{model.TaxablePay}|{model.Deductions}|{model.NetPay}|{model.IncomeTax}\n");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Data Not Found");
             }
         }
     }

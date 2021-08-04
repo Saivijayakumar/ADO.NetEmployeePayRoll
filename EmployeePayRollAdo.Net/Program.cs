@@ -10,7 +10,10 @@ namespace EmployeePayRollAdo.Net
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("\t\tWelcome to Employee PayRoll Using ADO.NET");
+            Console.WriteLine("\t\tWelcome to Employee PayRoll Using ADO.NET\n");
+            EmployeeRepository repository = new EmployeeRepository();
+            repository.GetTotalInformationFromTable();
+            Console.ReadLine();
         }
     }
 }

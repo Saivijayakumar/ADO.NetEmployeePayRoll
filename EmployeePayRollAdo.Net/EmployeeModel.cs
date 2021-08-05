@@ -20,6 +20,11 @@ namespace EmployeePayRollAdo.Net
         public double Deductions { get; set; }
         public double NetPay { get; set; }
         public double IncomeTax { get; set; }
+        //Er extra coloums
+        public int CompanyId { get; set; }
+        public string CompanyName { get; set; }
+        public int DepartmentId { get; set; }
+
 
     }
 }

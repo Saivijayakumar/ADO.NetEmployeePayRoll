@@ -25,15 +25,15 @@ namespace EmployeePayRollAdo.Net
             try
             {
                 //set command text to command object
-                command.CommandText = @"INSERT INTO Employee VALUES (2,'Arun kana',984747484,'130 Park avenue','2014-08-09','M');";
+                command.CommandText = @"INSERT INTO Employee VALUES (2,'last',984747484,'130 Park avenue','2014-08-09','M');";
                 command.ExecuteNonQuery();
-                command.CommandText = @"INSERT INTO EMPPayroll(EmployeeIdentity,BasicPay,Deductions,IncomeTax) values (10,374848,484,2000);";
+                command.CommandText = @"INSERT INTO EMPPayroll(EmployeeIdentity,BasicPay,Deductions,IncomeTax) values (5,374848,484,2000);";
                 command.ExecuteNonQuery();
                 command.CommandText = @"UPDATE EMPPayroll SET TaxablePay = BasicPay-Deductions;";
                 command.ExecuteNonQuery();
                 command.CommandText = @"UPDATE EMPPayroll SET NetPay=TaxablePay-IncomeTax;";
                 command.ExecuteNonQuery();
-                command.CommandText = @"INSERT INTO EmployeeDepartment VALUES (4,10);";
+                command.CommandText = @"INSERT INTO EmployeeDepartment VALUES (4,5);";
                 command.ExecuteNonQuery();
                 //If all commands execute then only it commit.
                 transaction.Commit();
@@ -50,7 +50,26 @@ namespace EmployeePayRollAdo.Net
             {
                 sqlConnection.Close();
             }
-
+        }
+        public string DeleteUsingCascade()
+        {
+            sqlConnection.Open();
+            SqlTransaction transaction = sqlConnection.BeginTransaction();
+            SqlCommand command = sqlConnection.CreateCommand();
+            command.Transaction = transaction;
+            try
+            {
+                command.CommandText = @"DELETE FROM Employee WHERE EmployeeID=5;";
+                command.ExecuteNonQuery();
+                transaction.Commit();
+                return "success";
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                transaction.Rollback();
+                return "Unsuccess";
+            }
         }
 
     }

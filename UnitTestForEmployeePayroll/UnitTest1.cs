@@ -10,12 +10,14 @@ namespace UnitTestForEmployeePayroll
         EmployeeRepository repository;
         ERRepo errepo;
         EmployeeModel model;
+        EmployeeTransaction transaction;
         [TestInitialize]
         public void setup()
         {
             repository = new EmployeeRepository();
             model = new EmployeeModel();
             errepo = new ERRepo();
+            transaction = new EmployeeTransaction();
         }
         [TestMethod]
         [TestCategory("UPDATE")]
@@ -38,6 +40,7 @@ namespace UnitTestForEmployeePayroll
         }
         //-----------------ER Diagram--------------
         [TestMethod]
+        [TestCategory("ER Diagram")]
         public void GivenSelectQueryReturnCount()
         {
             //we already know how many data we have
@@ -46,6 +49,7 @@ namespace UnitTestForEmployeePayroll
             Assert.AreEqual(expected, actual);
         }
         [TestMethod]
+        [TestCategory("ER Diagram")]
         public void GiveingValuesToUpdateReturnSuccessCount()
         {
             int expected = 1;
@@ -55,6 +59,7 @@ namespace UnitTestForEmployeePayroll
             Assert.AreEqual(actual, expected);
         }
         [TestMethod]
+        [TestCategory("ER Diagram")]
         public void CallingMethodGetingCountOfResult()
         {
             int expected = 3;
@@ -62,11 +67,20 @@ namespace UnitTestForEmployeePayroll
             Assert.AreEqual(expected, actual);
         }
         [TestMethod]
+        [TestCategory("ER Diagram")]
         public void CallingMethodGettingResultInTheFormOfString()
         {
             string expected = "9168400 80000 9088400 4584200 2";
             string actual = errepo.AggregateFunctionBasedOnGender();
             Assert.AreEqual(expected, actual);
+        }
+        [TestMethod]
+        [TestCategory("Transaction")]
+        public void InsertNewRecordThroughTransactionIfRecordIsAddedItGiveSuccess()
+        {
+            string expected = "Success";
+            string actual = transaction.InserIntoTableUsingTransaction();
+            Assert.AreEqual(actual, expected);
         }
     }
 }

@@ -75,11 +75,19 @@ namespace UnitTestForEmployeePayroll
             Assert.AreEqual(expected, actual);
         }
         [TestMethod]
-        [TestCategory("Transaction")]
+        [TestCategory("Transaction for insert")]
         public void InsertNewRecordThroughTransactionIfRecordIsAddedItGiveSuccess()
         {
             string expected = "Success";
             string actual = transaction.InserIntoTableUsingTransaction();
+            Assert.AreEqual(actual, expected);
+        }
+        [TestMethod]
+        [TestCategory("Transaction for delete")]
+        public void UseingCascadeDeleteToDeleteRecordIFSuccessReturnSucess()
+        {
+            string expected = "success";
+            string actual = transaction.DeleteUsingCascade();
             Assert.AreEqual(actual, expected);
         }
     }

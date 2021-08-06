@@ -90,5 +90,21 @@ namespace UnitTestForEmployeePayroll
             string actual = transaction.DeleteUsingCascade();
             Assert.AreEqual(actual, expected);
         }
+        [TestMethod]
+        [TestCategory("IsActive")]
+        public void TryingToCreateNewColoumIfColoumCreatesReturnSuccess()
+        {
+            string expected = "Success";
+            string actual = transaction.AddingIsActiveColoumToTable();
+            Assert.AreEqual(actual, expected);
+        }
+        [TestMethod]
+        [TestCategory("IsActive")]
+        public void TryingToDisplayTheDateIfIsActiveIsoneIfItSuccessReturnSuccess()
+        {
+            int expected = 4;
+            int actual = transaction.RetriveDataIfIsActiveIsOne();
+            Assert.AreEqual(actual, expected);
+        }
     }
 }

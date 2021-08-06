@@ -173,9 +173,10 @@ namespace EmployeePayRollAdo.Net
             ermodel.TaxablePay= Convert.ToDouble(reader["TaxablePay"]);
             ermodel.IncomeTax= Convert.ToDouble(reader["IncomeTax"]);
             ermodel.Deductions= Convert.ToDouble(reader["Deductions"]);
+            ermodel.IsActive = Convert.ToInt32(reader["IsActive"]);
             Console.WriteLine($"\nCompanyID:{ermodel.CompanyId}|CompanyName:{ermodel.CompanyName}|EmployeeID:{ermodel.EmployeId}|EmployeeName:{ermodel.EmployeName}|" +
                 $"DepartmentID:{ermodel.DepartmentId}|DepartmentName:{ermodel.Department}|Gender:{ermodel.Gender}|StartDate:{ermodel.StartDate}|BasePay:{ermodel.Base_pay}" +
-                $"|Phone:{ermodel.PhoneNumber}|Address:{ermodel.Address}|NetPay:{ermodel.NetPay}|TaxablePay:{ermodel.TaxablePay}|IncomeTax:{ermodel.IncomeTax}|Deduction:{ermodel.Deductions}");
+                $"|Phone:{ermodel.PhoneNumber}|Address:{ermodel.Address}|NetPay:{ermodel.NetPay}|TaxablePay:{ermodel.TaxablePay}|IncomeTax:{ermodel.IncomeTax}|Deduction:{ermodel.Deductions}|IsActive:{ermodel.IsActive}");
         }
     }
 }

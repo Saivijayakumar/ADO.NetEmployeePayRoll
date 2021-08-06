@@ -24,6 +24,7 @@ namespace EmployeePayRollAdo.Net
         public int CompanyId { get; set; }
         public string CompanyName { get; set; }
         public int DepartmentId { get; set; }
+        public int IsActive { get; set; }
 
 
     }

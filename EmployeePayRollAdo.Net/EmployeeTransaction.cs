@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -71,6 +72,76 @@ namespace EmployeePayRollAdo.Net
                 return "Unsuccess";
             }
         }
-
+        public string AddingIsActiveColoumToTable()
+        {
+            //Opening the connection
+            sqlConnection.Open();
+            //Begin the Transaction and creating transaction object
+            SqlTransaction transaction = sqlConnection.BeginTransaction();
+            //creating command object and createcommand
+            SqlCommand command = sqlConnection.CreateCommand();
+            //set Command to transaction
+            command.Transaction = transaction;
+            try
+            {
+                //set command text to command object
+                command.CommandText = @"ALTER TABLE Employee ADD IsActive int NOT NULL default 1;";
+                command.ExecuteNonQuery();
+                command.CommandText = @"UPDATE Employee SET IsActive = 0 WHERE EmployeeID=1";
+                command.ExecuteNonQuery();
+                //now we cant see sai name in employe.
+                //If all commands execute then only it commit.
+                transaction.Commit();
+                return "Success";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                //If any command is not executed then it rollback
+                transaction.Rollback();
+                return "Unsuccess";
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+        }
+        public int RetriveDataIfIsActiveIsOne()
+        {
+            int count = 0;
+            try
+            {
+                //create object for employeeModel
+                EmployeeModel ermodel = new EmployeeModel();
+                SqlCommand command = new SqlCommand("SelectdataifIsActiveIsOne", sqlConnection);
+                command.CommandType = CommandType.StoredProcedure;
+                sqlConnection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        //calling method to display values
+                        ERRepo.DisplayTotalData(ermodel, reader);
+                        count++;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Data Not Found");
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return default;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+            return count;
+        }
     }
 }

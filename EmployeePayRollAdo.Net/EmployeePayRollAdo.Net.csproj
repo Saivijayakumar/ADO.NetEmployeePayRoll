@@ -52,8 +52,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddingMultipleContact.cs" />
     <Compile Include="EmployeeModel.cs" />
     <Compile Include="EmployeeRepository.cs" />
+    <Compile Include="EmployeeThreads.cs" />
     <Compile Include="EmployeeTransaction.cs" />
     <Compile Include="ERRepo.cs" />
     <Compile Include="Program.cs" />

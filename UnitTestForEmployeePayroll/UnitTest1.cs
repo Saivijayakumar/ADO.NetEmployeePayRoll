@@ -106,5 +106,21 @@ namespace UnitTestForEmployeePayroll
             int actual = transaction.RetriveDataIfIsActiveIsOne();
             Assert.AreEqual(actual, expected);
         }
+        [TestMethod]
+        [TestCategory("Threads")]
+        public void PerformingWithOutThreadAndReturningCount()
+        {
+            int expected = 6;
+            int actual = transaction.TransverDataToListWithoutUsingThreads();
+            Assert.AreEqual(actual, expected);
+        }
+        [TestMethod]
+        [TestCategory("Threads")]
+        public void PerformingUsingThreadAndReturningCount()
+        {
+            int expected = 6;
+            int actual = transaction.TransverDataToListUsingThreads();
+            Assert.AreEqual(actual, expected);
+        }
     }
 }

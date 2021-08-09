@@ -45,6 +45,8 @@ namespace EmployeePayRollAdo.Net
                     Console.WriteLine("Enter Valid Choice");
                     break;
             }
+            EmployeeTransaction transaction = new EmployeeTransaction();
+            transaction.TransverDataToListUsingThreads();
             Console.ReadLine();
         }
     }

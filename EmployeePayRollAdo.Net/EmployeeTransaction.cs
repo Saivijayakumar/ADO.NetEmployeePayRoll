@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EmployeePayRollAdo.Net
@@ -13,6 +15,7 @@ namespace EmployeePayRollAdo.Net
         public static string connectionString = @"Server=(localdb)\MSSQLLocalDB;Initial Catalog = payroll_services;";
         //Createing conection object to connect with database
         SqlConnection sqlConnection = new SqlConnection(connectionString);
+        List<EmployeeModel> employeesList = new List<EmployeeModel>();
         public string InserIntoTableUsingTransaction()
         {
             //Opening the connection
@@ -142,6 +145,138 @@ namespace EmployeePayRollAdo.Net
                 sqlConnection.Close();
             }
             return count;
+        }
+        //----------------Using Threads From Here----------------
+        public int TransverDataToListWithoutUsingThreads()
+        {
+            int count = 0;
+            try
+            {
+                //create object for employeeModel
+                EmployeeModel ermodel = new EmployeeModel();
+                Stopwatch stopwatch = new Stopwatch();
+                SqlCommand command = new SqlCommand("SelectForErTable", sqlConnection);
+                command.CommandType = CommandType.StoredProcedure;
+                sqlConnection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    stopwatch.Start();
+                    while (reader.Read())
+                    {
+                        //calling method to display values
+                        DisplayAndAddToList(ermodel, reader);
+                        count++;
+                    }
+                    stopwatch.Stop();
+                    Console.WriteLine($"Duration without Thread excecution : {stopwatch.ElapsedMilliseconds} ");
+                }
+                else
+                {
+                    Console.WriteLine("Data Not Found");
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+            return count;
+        }
+        public void DisplayAndAddToList(EmployeeModel ermodel, SqlDataReader reader)
+        {
+            ermodel.CompanyId = Convert.ToInt32(reader["CompanyID"]);
+            ermodel.CompanyName = reader["CompanyName"].ToString();
+            ermodel.EmployeId = Convert.ToInt32(reader["EmployeeID"]);
+            ermodel.EmployeName = reader["EmployeeName"].ToString();
+            ermodel.DepartmentId = Convert.ToInt32(reader["DepartmentId"]);
+            ermodel.Department = reader["DepartName"].ToString();
+            ermodel.Gender = reader["Gender"].ToString();
+            ermodel.StartDate = Convert.ToDateTime(reader["StartDate"]);
+            ermodel.Base_pay = Convert.ToDouble(reader["BasicPay"]);
+            ermodel.PhoneNumber = Convert.ToInt64(reader["EmployeePhoneNumber"]);
+            ermodel.Address = reader["EmployeeAddress"].ToString();
+            ermodel.NetPay = Convert.ToDouble(reader["NetPay"]);
+            ermodel.TaxablePay = Convert.ToDouble(reader["TaxablePay"]);
+            ermodel.IncomeTax = Convert.ToDouble(reader["IncomeTax"]);
+            ermodel.Deductions = Convert.ToDouble(reader["Deductions"]);
+            ermodel.IsActive = Convert.ToInt32(reader["IsActive"]);
+            Console.WriteLine($"\nCompanyID:{ermodel.CompanyId}|CompanyName:{ermodel.CompanyName}|EmployeeID:{ermodel.EmployeId}|EmployeeName:{ermodel.EmployeName}|" +
+                $"DepartmentID:{ermodel.DepartmentId}|DepartmentName:{ermodel.Department}|Gender:{ermodel.Gender}|StartDate:{ermodel.StartDate}|BasePay:{ermodel.Base_pay}" +
+                $"|Phone:{ermodel.PhoneNumber}|Address:{ermodel.Address}|NetPay:{ermodel.NetPay}|TaxablePay:{ermodel.TaxablePay}|IncomeTax:{ermodel.IncomeTax}|Deduction:{ermodel.Deductions}|IsActive:{ermodel.IsActive}");
+            employeesList.Add(ermodel);
+        }
+        public int TransverDataToListUsingThreads()
+        {
+            int count = 0;
+            try
+            {
+                //create object for employeeModel
+                EmployeeModel ermodel = new EmployeeModel();
+                Stopwatch stopwatch = new Stopwatch();
+                SqlCommand command = new SqlCommand("SelectForErTable", sqlConnection);
+                command.CommandType = CommandType.StoredProcedure;
+                sqlConnection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    stopwatch.Start();
+                    while (reader.Read())
+                    {
+                        //calling method to display values
+                        DisplayAndAddToListUsingThread(ermodel, reader);
+                        count++;
+                    }
+                    stopwatch.Stop();
+                    Console.WriteLine($"Duration without Thread excecution : {stopwatch.ElapsedMilliseconds} ");
+                }
+                else
+                {
+                    Console.WriteLine("Data Not Found");
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+            return count;
+        }
+        public void DisplayAndAddToListUsingThread(EmployeeModel ermodel, SqlDataReader reader)
+        {
+            ermodel.CompanyId = Convert.ToInt32(reader["CompanyID"]);
+            ermodel.CompanyName = reader["CompanyName"].ToString();
+            ermodel.EmployeId = Convert.ToInt32(reader["EmployeeID"]);
+            ermodel.EmployeName = reader["EmployeeName"].ToString();
+            ermodel.DepartmentId = Convert.ToInt32(reader["DepartmentId"]);
+            ermodel.Department = reader["DepartName"].ToString();
+            ermodel.Gender = reader["Gender"].ToString();
+            ermodel.StartDate = Convert.ToDateTime(reader["StartDate"]);
+            ermodel.Base_pay = Convert.ToDouble(reader["BasicPay"]);
+            ermodel.PhoneNumber = Convert.ToInt64(reader["EmployeePhoneNumber"]);
+            ermodel.Address = reader["EmployeeAddress"].ToString();
+            ermodel.NetPay = Convert.ToDouble(reader["NetPay"]);
+            ermodel.TaxablePay = Convert.ToDouble(reader["TaxablePay"]);
+            ermodel.IncomeTax = Convert.ToDouble(reader["IncomeTax"]);
+            ermodel.Deductions = Convert.ToDouble(reader["Deductions"]);
+            ermodel.IsActive = Convert.ToInt32(reader["IsActive"]);
+            Thread thread = new Thread(() =>
+            {
+                Console.WriteLine($"\nCompanyID:{ermodel.CompanyId}|CompanyName:{ermodel.CompanyName}|EmployeeID:{ermodel.EmployeId}|EmployeeName:{ermodel.EmployeName}|" +
+                $"DepartmentID:{ermodel.DepartmentId}|DepartmentName:{ermodel.Department}|Gender:{ermodel.Gender}|StartDate:{ermodel.StartDate}|BasePay:{ermodel.Base_pay}" +
+                $"|Phone:{ermodel.PhoneNumber}|Address:{ermodel.Address}|NetPay:{ermodel.NetPay}|TaxablePay:{ermodel.TaxablePay}|IncomeTax:{ermodel.IncomeTax}|Deduction:{ermodel.Deductions}|IsActive:{ermodel.IsActive}");
+                employeesList.Add(ermodel);
+            });
+            thread.Start();
+            Console.WriteLine($"Thread Id: {thread.ManagedThreadId} ");
         }
     }
 }

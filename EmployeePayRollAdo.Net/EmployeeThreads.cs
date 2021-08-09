@@ -61,35 +61,35 @@ namespace EmployeePayRollAdo.Net
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-            AddContactListToDBWithoutThread(employeeModels);
+            AddEmployeeListToDBWithoutThread(employeeModels);
             stopwatch.Stop();
             Console.WriteLine($"Time taken for Without Thread :{stopwatch.ElapsedMilliseconds}");
             stopwatch.Start();
-            AddContactListToDBWithThread(employeeModels);
+            AddEmployeeListToDBWithThread(employeeModels);
             stopwatch.Stop();
             Console.WriteLine($"Time taken for With Thread :{stopwatch.ElapsedMilliseconds}");
         }
         // Method to Add List of Contacts To DB Without Thread..................
-        public void AddContactListToDBWithoutThread(List<EmployeeModel> contactList)
+        public void AddEmployeeListToDBWithoutThread(List<EmployeeModel> contactList)
         {
 
             contactList.ForEach(contact =>
             {
-                Console.WriteLine("Contact being added: " + contact.EmployeName);
+                Console.WriteLine("Employe being added: " + contact.EmployeName);
                 this.AddNewEmployee(contact);
-                Console.WriteLine("Contact added: " + contact.EmployeName);
+                Console.WriteLine("Employe added: " + contact.EmployeName);
             });
         }
         // Method to Add List of Contacts To DB With Thread......................
-        public void AddContactListToDBWithThread(List<EmployeeModel> contactList)
+        public void AddEmployeeListToDBWithThread(List<EmployeeModel> contactList)
         {
             contactList.ForEach(contact =>
             {
                 Thread thread = new Thread(() =>
                 {
-                    Console.WriteLine("Contact adding start" + contact.EmployeName);
+                    Console.WriteLine("Employe adding start: " + contact.EmployeName);
                     this.AddNewEmployee(contact);
-                    Console.WriteLine("Contact adding end: " + contact.EmployeName);
+                    Console.WriteLine("Employe adding end: " + contact.EmployeName);
                 });
                 thread.Start();
                 thread.Join();
